@@ -3,214 +3,387 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sonu Panel V1 - Admin Dashboard</title>
-    <!-- Firebase SDKs -->
+    <title>Sonix Key Manager - Premium</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
-            --primary: #00f2ff;
-            --secondary: #7000ff;
-            --bg: #0a0b1e;
-            --card-bg: #161b33;
-            --text: #ffffff;
+            --bg-color: #09090b;
+            --surface-color: #18181b;
+            --surface-light: #27272a;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary: #0ea5e9;
+            --text-main: #f8fafc;
+            --text-muted: #a1a1aa;
+            --success: #22c55e;
+            --success-bg: rgba(34, 197, 94, 0.1);
+            --danger: #ef4444;
+            --danger-bg: rgba(239, 68, 68, 0.1);
+            --border: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         body {
-            font-family: 'Outfit', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 260px;
+            background-color: var(--surface-color);
+            border-right: 1px solid var(--border);
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
         }
 
-        .container {
-            width: 100%;
-            max-width: 600px;
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(112, 0, 255, 0.2);
-            border: 1px solid rgba(0, 242, 255, 0.1);
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 28px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        .brand {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 12px;
             margin-bottom: 8px;
-            color: rgba(255,255,255,0.7);
-            font-size: 14px;
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
 
-        select {
-            width: 100%;
-            padding: 12px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(0,242,255,0.2);
-            border-radius: 12px;
-            color: white;
-            font-size: 16px;
-            outline: none;
-            box-sizing: border-box;
-        }
-
-        button {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 5px 15px rgba(112, 0, 255, 0.4);
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 242, 255, 0.4);
-        }
-
-        .key-display {
-            margin-top: 25px;
-            padding: 20px;
-            background: rgba(0, 242, 255, 0.1);
-            border-radius: 12px;
-            text-align: center;
-            display: none;
-            border: 1px dashed var(--primary);
-        }
-
-        .key-text {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--primary);
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .stat-card {
-            background: rgba(255,255,255,0.03);
-            padding: 15px;
-            border-radius: 15px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .stat-value {
-            font-size: 20px;
-            font-weight: 600;
+        .nav-item.active, .nav-item:hover {
+            background-color: rgba(99, 102, 241, 0.1);
             color: var(--primary);
         }
 
-        .key-list {
-            margin-top: 40px;
-            width: 100%;
-            max-width: 600px;
+        /* Main Content Styling */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
         }
 
-        .key-item {
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 10px;
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 40px;
         }
 
-        .status-badge {
-            font-size: 10px;
-            padding: 4px 8px;
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .stat-title {
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* Generator Section */
+        .generator-card {
+            background: linear-gradient(145deg, var(--surface-color), #111113);
+            border: 1px solid var(--border);
             border-radius: 20px;
-            margin-left: 10px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .status-used { background: #ff3b3b; color: white; }
-        .status-unused { background: #00c853; color: white; }
+        .generator-header {
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+        }
 
-        .btn-delete {
-            background: #ff3b3b;
-            padding: 8px 12px;
+        .input-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        select {
+            flex: 1;
+            padding: 14px 20px;
+            background-color: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-main);
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        select:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Data Table */
+        .table-container {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--surface-light);
+            padding: 16px 24px;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-main);
+            font-size: 15px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .key-text {
+            font-family: monospace;
+            font-size: 16px;
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        /* Badges & Buttons inside Table */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
             font-size: 12px;
-            width: auto;
-            border-radius: 8px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge.active { background: var(--success-bg); color: var(--success); }
+        .badge.used { background: var(--danger-bg); color: var(--danger); }
+
+        .action-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-icon {
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-icon:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .btn-icon.delete:hover {
+            background: var(--danger);
+            border-color: var(--danger);
+        }
+
+        /* Custom Toast Notification */
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--surface-light);
+            border-left: 4px solid var(--primary);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(150%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+        }
+
+        #toast.show {
+            transform: translateX(0);
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>SONU PANEL V1</h1>
-        
-        <div class="form-group">
-            <label>Choose Key Validity</label>
-            <select id="duration">
-                <option value="1h">1 Hour (Trial)</option>
-                <option value="6h">6 Hours</option>
-                <option value="12h">12 Hours</option>
-                <option value="1d">1 Day</option>
-                <option value="7d">1 Week</option>
-                <option value="30d">1 Month</option>
-                <option value="life">Lifetime</option>
-            </select>
+    <nav class="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-bolt"></i> SONIX ADMIN
         </div>
+        <a href="#" class="nav-item active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-key"></i> Manage Keys</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-users"></i> App Users</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Settings</a>
+    </nav>
 
-        <button onclick="generateKey()">Generate New Key</button>
-
-        <div id="resultBox" class="key-display">
-            <small>Successfully Generated:</small>
-            <span id="keyOutput" class="key-text">SONU-XXXX-XXXX</span>
-            <button style="background:var(--primary); color:black; font-size: 12px; padding: 5px;" onclick="copyKey()">COPY KEY</button>
+    <main class="main-content">
+        <div class="header">
+            <div>
+                <h1>Overview</h1>
+                <p style="color: var(--text-muted); margin-top: 5px;">Manage your access keys securely.</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <img src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff" alt="Admin" style="border-radius: 50%; width: 45px;">
+            </div>
         </div>
 
         <div class="stats-grid">
             <div class="stat-card">
-                <small>Total Keys</small>
-                <div id="totalKeys" class="stat-value">0</div>
+                <span class="stat-title">Total Keys Generated</span>
+                <span class="stat-value" id="totalKeys">0</span>
             </div>
             <div class="stat-card">
-                <small>Keys Used</small>
-                <div id="activeKeys" class="stat-value">0</div>
+                <span class="stat-title">Active / Unused Keys</span>
+                <span class="stat-value" id="unusedKeys" style="color: var(--success);">0</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-title">Keys In Use</span>
+                <span class="stat-value" id="usedKeys" style="color: var(--danger);">0</span>
             </div>
         </div>
-    </div>
 
-    <div class="key-list" id="keyList">
-        <!-- Live Data -->
-    </div>
+        <div class="generator-card">
+            <div class="generator-header">
+                <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--primary);"></i> Generate New Access Key
+            </div>
+            <div class="input-group">
+                <select id="duration">
+                    <option value="1h">1 Hour (Trial License)</option>
+                    <option value="6h">6 Hours License</option>
+                    <option value="12h">12 Hours License</option>
+                    <option value="1d">1 Day Premium</option>
+                    <option value="7d">7 Days Premium</option>
+                    <option value="30d">1 Month Premium</option>
+                    <option value="life">Lifetime VIP Access</option>
+                </select>
+                <button class="btn-primary" onclick="generateKey()">
+                    <i class="fa-solid fa-plus"></i> Create Key
+                </button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Access Key</th>
+                        <th>Duration</th>
+                        <th>Expiry Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="keyList">
+                    </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div id="toast"><i class="fa-solid fa-circle-check" style="color: var(--primary); font-size: 20px;"></i> <span id="toastMessage">Action Successful</span></div>
 
     <script>
         // --- FIREBASE CONFIGURATION ---
+        // (Isme apni asli details lagana mat bhulna)
         const firebaseConfig = {
             apiKey: "AIzaSyBOf0NjgjqIfjq-vCvHJivcP2w-xIp7eDQ",
             authDomain: "sonixtools-admin.firebaseapp.com",
@@ -225,10 +398,21 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // Custom Toast Function (Alert box ko replace karne ke liye)
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            document.getElementById("toastMessage").innerText = message;
+            toast.classList.add("show");
+            setTimeout(() => {
+                toast.classList.remove("show");
+            }, 3000);
+        }
+
+        // Generate Key Logic
         function generateKey() {
             const duration = document.getElementById('duration').value;
-            const randomStr = Math.random().toString(36).substring(2, 8).toUpperCase();
-            const fullKey = "SONU-" + randomStr;
+            const randomStr = Math.random().toString(36).substring(2, 10).toUpperCase();
+            const fullKey = "SNX-" + randomStr; // Make it look premium
 
             const now = new Date();
             let expiry = new Date();
@@ -247,59 +431,100 @@
                 expiry: expiry instanceof Date ? expiry.toISOString() : expiry,
                 is_used: 0,
                 device_id: "NOT_SET",
-                status: 200
+                created_at: new Date().toISOString()
             };
 
             db.ref('keys/' + fullKey).set(keyData).then(() => {
-                document.getElementById('keyOutput').innerText = fullKey;
-                document.getElementById('resultBox').style.display = 'block';
+                showToast(`New Key Generated: ${fullKey}`);
             });
         }
 
-        function copyKey() {
-            const key = document.getElementById('keyOutput').innerText;
-            navigator.clipboard.writeText(key);
-            alert("Key Copied!");
+        // Copy Key Logic
+        function copyKey(keyString) {
+            navigator.clipboard.writeText(keyString).then(() => {
+                showToast(`Copied to clipboard: ${keyString}`);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
         }
 
+        // Delete Key Logic
         function deleteKey(key) {
-            if(confirm("Are you sure?")) db.ref('keys/' + key).remove();
-        }
-
-        // Live Listener
-        db.ref('keys').on('value', (snapshot) => {
-            const data = snapshot.val();
-            const listDiv = document.getElementById('keyList');
-            const totalKeys = document.getElementById('totalKeys');
-            const activeKeys = document.getElementById('activeKeys');
-            
-            listDiv.innerHTML = "";
-            let count = 0;
-            let usedCount = 0;
-
-            if(data) {
-                Object.keys(data).forEach(k => {
-                    const item = data[k];
-                    count++;
-                    if(item.is_used === 1) usedCount++;
-
-                    const badge = item.is_used === 1 ? 
-                        `<span class="status-badge status-used">USED</span>` : 
-                        `<span class="status-badge status-unused">NEW</span>`;
-
-                    listDiv.innerHTML += `
-                        <div class="key-item">
-                            <div class="key-info">
-                                <strong>${item.key_code} ${badge}</strong>
-                                <div style="font-size:11px; opacity:0.6;">Expires: ${new Date(item.expiry).toLocaleString()}</div>
-                            </div>
-                            <button class="btn-delete" onclick="deleteKey('${item.key_code}')">X</button>
-                        </div>
-                    `;
+            if(confirm("Are you sure you want to delete this key permanently?")) {
+                db.ref('keys/' + key).remove().then(() => {
+                    showToast("Key deleted successfully!");
                 });
             }
-            totalKeys.innerText = count;
-            activeKeys.innerText = usedCount;
+        }
+
+        // Format Date Function
+        function formatDate(isoString) {
+            if (isoString === "2099-12-31T23:59:59") return "Lifetime";
+            const date = new Date(isoString);
+            return date.toLocaleString('en-US', { 
+                month: 'short', day: 'numeric', year: 'numeric', 
+                hour: '2-digit', minute: '2-digit'
+            });
+        }
+
+        // Live Listener from Firebase
+        db.ref('keys').on('value', (snapshot) => {
+            const data = snapshot.val();
+            const listBody = document.getElementById('keyList');
+            
+            listBody.innerHTML = "";
+            let total = 0, used = 0, unused = 0;
+
+            if(data) {
+                // Sort keys by latest created (Reverse order)
+                const sortedKeys = Object.keys(data).reverse();
+
+                sortedKeys.forEach(k => {
+                    const item = data[k];
+                    total++;
+                    
+                    let statusBadge = '';
+                    if(item.is_used === 1) {
+                        used++;
+                        statusBadge = `<span class="badge used"><i class="fa-solid fa-lock"></i> Used</span>`;
+                    } else {
+                        unused++;
+                        statusBadge = `<span class="badge active"><i class="fa-solid fa-unlock"></i> Unused</span>`;
+                    }
+
+                    // Mapping duration values for display
+                    const durationMap = {
+                        '1h': '1 Hour', '6h': '6 Hours', '12h': '12 Hours',
+                        '1d': '1 Day', '7d': '7 Days', '30d': '1 Month', 'life': 'Lifetime'
+                    };
+
+                    listBody.innerHTML += `
+                        <tr>
+                            <td class="key-text">${item.key_code}</td>
+                            <td>${durationMap[item.duration] || item.duration}</td>
+                            <td style="color: var(--text-muted); font-size: 13px;">${formatDate(item.expiry)}</td>
+                            <td>${statusBadge}</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-icon" onclick="copyKey('${item.key_code}')" title="Copy Key">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                    <button class="btn-icon delete" onclick="deleteKey('${item.key_code}')" title="Delete Key">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } else {
+                listBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 30px; color: var(--text-muted);">No keys found. Generate one to start!</td></tr>`;
+            }
+
+            // Update Top Stats
+            document.getElementById('totalKeys').innerText = total;
+            document.getElementById('usedKeys').innerText = used;
+            document.getElementById('unusedKeys').innerText = unused;
         });
     </script>
 </body>
